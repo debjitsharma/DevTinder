@@ -1,21 +1,11 @@
 const express=require("express");
+const adminAuth=require("./middlewares/auth.js")
 const app= express();
 
-app.get("/user",(req,res,next)=>{
-next();
-// res.send("A!")
-});
-app.get("/user",(req,res,next)=>{
+app.get("/admin/",adminAuth);
+app.get("/admin/deleteUser",(req,res,next)=>{
     // res.send("B!")
-    next();})
-app.get("/user",(req,res,next)=>{
-    res.send("C!")
-    next();})
-app.get("/user",(req,res,next)=>{
-    res.send("D!")
-    next();})
-app.get("/user",(req,res)=>{
-    res.send("E!")
+    res.send("Deleted User");
+    // next();
 })
-
 app.listen(50000,()=>{console.log("Server is successfully listening")})
