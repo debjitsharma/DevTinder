@@ -1,5 +1,5 @@
 const adminAuth=(req,res,next)=>{
-const token="xy";
+const token="xyz";
     const isAdminAuthorized= token==="xyz";
     if(!isAdminAuthorized){
         res.status(401).send("Unauthorized request");
@@ -8,6 +8,15 @@ const token="xy";
         next();
     }
 }
-module.exports={
-    adminAuth,
-};
+
+const userAuth=(req,res,next)=>{
+const token="xyz";
+    const isUserAuthorized= token==="xyz";
+    if(!isUserAuthorized){
+        res.status(401).send("Unauthorized request");
+    }
+    else{
+        next();
+    }
+}
+module.exports = {adminAuth, userAuth};
