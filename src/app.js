@@ -2,15 +2,9 @@ const express=require("express");
 const connectDB=require("../config/database")
 const app=express();
 const User=require("../models/user");
+app.use(express.json());
 app.post("/signup",async(req,res)=>{
-    const user=new User(
-        {
-            firstName:"Debjit",
-            lastName:"Sharma",
-            emailId:"debjit2k15@gmail.com",
-            password:"sjbdsjfb",
-        }
-    );
+    const user=new User(req.body);
     try{await user.save();
 res.send("User Added successfully!!");
 }catch(err){
@@ -18,7 +12,50 @@ res.send("User Added successfully!!");
 }
 
 });
+app.get("/users",async(req, res)=>{
+    const userEmail=req.body.emailId;
+    const userId=req.body.userId;
+    try{
+        const users= await User.find({emailId:userEmail});
+        res.send(users);
+    }
+    catch(err){
+    res.status(400).send("Email doesn't match any user "+ err.message)
+    }
+})
 
+app.get("/feed",async(req,res)=>{
+    try{
+        const users=await User.find({});
+        res.send(users);
+        
+    }
+    catch(err){
+        res.status(400).send("Users empty"+ err.message)
+    }
+})
+app.delete("/delete", async(req,res)=>{
+    const userId=req.body.userId;
+    try{
+        await User.findByIdAndDelete(userId)
+        res.send("User deleted!")
+    }
+    catch(err){
+        res.status(400).send("Something went wrong");
+    }
+})
+app.patch("/update", async(req,res)=>{
+    const data=req.body;
+    const userId=req.body.userId;
+    try{
+        await User.findByIdAndUpdate({_id:userId},data);
+        res.send("User Updated!")
+    }
+    catch(err){
+        res.status(400).send("Something went wrong");
+    }
+
+})
 connectDB()
 .then(()=>
 {
