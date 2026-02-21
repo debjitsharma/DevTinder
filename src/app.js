@@ -45,10 +45,9 @@ app.delete("/delete", async(req,res)=>{
     }
 })
 app.patch("/update", async(req,res)=>{
-    const data=req.body;
-    const userId=req.body.userId;
+    const {userId,...updateData}=req.body;
     try{
-       const user= await User.findByIdAndUpdate({_id:userId},data,{returnDocument:"after"});
+       const user= await User.findByIdAndUpdate(userId,updateData,{runValidators:true});
         res.send("User Updated!")
         console.log(user);
     }
