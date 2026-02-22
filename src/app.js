@@ -1,5 +1,6 @@
 const express=require("express");
 const connectDB=require("../config/database")
+const {validateSignUpData}
 const app=express();
 const User=require("../models/user");
 app.use(express.json());
@@ -51,15 +52,22 @@ app.patch("/user/:userId",async(req,res)=>{
         const ALLOWED_UPDATES=["photoURL","about","gender","age","skills"];
         const isUpdateAllowed=Object.keys(data).every((k)=>
             ALLOWED_UPDATES.includes(k));
-        if(data?.skills.length>10){
+        if(!isUpdateAllowed){
+            throw new Error("Invalid updates!");
+        }
+        if(data?.skills && data.skills.length>10){
             throw new Error("Skills cannot be more than 10")
         }
-        const user= await User.findByIdAndUpdate(userId,updateData,{runValidators:true});
-        res.send("User Updated!")
+        const user= await User.findByIdAndUpdate(userId,data,{runValidators:true,new:true});
+        
         console.log(user);
+        if (!user){
+            return res.status(404).send("User not found");
+        }
+        res.send("User Updated!")
     }
     catch(err){
-        res.status(400).send("Something went wrong");
+        res.status(400).send(err.message);
     }
 }
 )
