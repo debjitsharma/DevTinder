@@ -1,18 +1,70 @@
 const express=require("express");
+const bcrypt=require("bcrypt");
+var cookieParser = require('cookie-parser')
 const connectDB=require("../config/database")
-const {validateSignUpData}
+const jwt=require("jsonwebtoken");
+const {validateSignUpData} = require("../utils/validators")
 const app=express();
 const User=require("../models/user");
 app.use(express.json());
+app.use(cookieParser());
 app.post("/signup",async(req,res)=>{
-    const user=new User(req.body);
-    try{await user.save();
+    try{
+        //validation
+validateSignUpData(req);
+//extraction of only allowed fields
+const {firstName,lastName,emailId,password}=req.body;
+//hashing of password
+const passwordHash=await bcrypt.hash(password,10);
+//User creation
+const user=new User({
+    firstName,
+    lastName,
+    emailId,
+    password:passwordHash
+});
+await user.save();
 res.send("User Added successfully!!");
 }catch(err){
     res.status(400).send("error saving the user"+ err.message)
 }
 
 });
+app.post("/login",async(req,res)=>{
+    try{
+        const {emailId,password}=req.body;
+        const user=await User.findOne({emailId});
+        if(!user){
+            throw new Error("Invalid Credentials");
+        }
+        const isPasswordValid=await bcrypt.compare(password,user.password);
+          if(isPasswordValid){
+            //Create a jwt token
+            const token= await jwt.sign({_id:user._id},"Deb@DevTinder$798");
+            console.log(token);
+            //Add the token to cookie and send the response back to the user
+            res.cookie("token",token);
+            res.send("Login Successful");
+         
+          } else{
+          throw new Error("Invalid Credentials"); 
+          }
+
+    }
+    catch(err){
+    res.status(400).send(err.message)
+    }
+})
+app.get("/profile",async(req,res)=>{
+ const cookies=req.cookies;
+
+ console.log(cookies);
+ res.send("Reading Cookie"); 
+ const {token}=cookies;
+ if(!token){
+    
+ }  
+})
 app.get("/users",async(req, res)=>{
     const userEmail=req.body.emailId;
     const userId=req.body.userId;

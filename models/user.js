@@ -16,22 +16,10 @@ const userSchema=new mongoose.Schema(
             lowercase:true,
             required:true,
             unique:[true,"email id must be unique"],
-            trim:true,
-            validate(value){
-                if(!validator.isEmail(value)){
-                    throw new Error("Invalid email address: "+ value);
-
-                }
-            }
-           
+            trim:true,           
         },
         password:{
             type:String,
-            validate(value){
-                if(!validator.isStrongPassword(value)){
-                    throw new Error("Enter a Strong Password: "+ value);
-                }
-            }
         },
         age:{
             type:Number,
