@@ -4,6 +4,7 @@ var cookieParser = require('cookie-parser')
 const connectDB=require("../config/database")
 const jwt=require("jsonwebtoken");
 const {validateSignUpData} = require("../utils/validators")
+const {adminAuth}= require("../middlewares/auth")
 const app=express();
 const User=require("../models/user");
 app.use(express.json());
@@ -40,7 +41,7 @@ app.post("/login",async(req,res)=>{
         const isPasswordValid=await bcrypt.compare(password,user.password);
           if(isPasswordValid){
             //Create a jwt token
-            const token= await jwt.sign({_id:user._id},"Deb@DevTinder$798");
+            const token= await jwt.sign({_id:user._id},"Deb@DevTinder$798",expiresIn:"0d");
             console.log(token);
             //Add the token to cookie and send the response back to the user
             res.cookie("token",token);
@@ -55,16 +56,20 @@ app.post("/login",async(req,res)=>{
     res.status(400).send(err.message)
     }
 })
-app.get("/profile",async(req,res)=>{
- const cookies=req.cookies;
+app.get("/profile",adminAuth,async(req,res)=>{
+    try{
+        const user=req.user;
 
- console.log(cookies);
- res.send("Reading Cookie"); 
- const {token}=cookies;
- if(!token){
-    
- }  
-})
+        if(!user){
+            throw new Error("User doesn't exist");
+        }
+        res.send(user);
+
+    }
+    catch(err){
+    res.status(400).send("Error: "+ err.message);
+    }
+});
 app.get("/users",async(req, res)=>{
     const userEmail=req.body.emailId;
     const userId=req.body.userId;
@@ -123,6 +128,10 @@ app.patch("/user/:userId",async(req,res)=>{
     }
 }
 )
+app.post("/sendConnectionRequest",adminAuth, async(req,res)=>{
+    const user=req.user;
+    res.send(user.firstName + "sent the connection request")
+});
 connectDB()
 .then(()=>
 {
