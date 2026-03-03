@@ -1,5 +1,4 @@
 const express=require("express");
-const bcrypt=require("bcrypt");
 var cookieParser = require('cookie-parser')
 const connectDB=require("../config/database")
 const jwt=require("jsonwebtoken");
@@ -38,13 +37,12 @@ app.post("/login",async(req,res)=>{
         if(!user){
             throw new Error("Invalid Credentials");
         }
-        const isPasswordValid=await bcrypt.compare(password,user.password);
+       const isPasswordValid= await user.validateUserPassword(password);
           if(isPasswordValid){
             //Create a jwt token
-            const token= await jwt.sign({_id:user._id},"Deb@DevTinder$798",expiresIn:"0d");
-            console.log(token);
+            const token=await user.getJWT();
             //Add the token to cookie and send the response back to the user
-            res.cookie("token",token);
+            res.cookie("token",token, {httpOnly: true,expires: new Date(Date.now()+7*24*360000)});
             res.send("Login Successful");
          
           } else{
