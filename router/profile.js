@@ -1,14 +1,9 @@
 const express= require("express");
 const profileRouter= express.Router();
-const express=require("express");
 var cookieParser = require('cookie-parser')
 const jwt=require("jsonwebtoken");
 const {adminAuth}= require("../middlewares/auth")
-const app=express();
 const User=require("../models/user");
-app.use(express.json());
-app.use(cookieParser());
-
 
 profileRouter.get("/profile",adminAuth,async(req,res)=>{
     try{

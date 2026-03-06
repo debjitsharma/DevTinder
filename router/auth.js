@@ -1,13 +1,10 @@
 const express= require("express");
 const authRouter= express.Router();
 const {validateSignUpData} = require("../utils/validators");
-const express=require("express");
 var cookieParser = require('cookie-parser')
 const jwt=require("jsonwebtoken");
-const app=express();
 const User=require("../models/user");
-app.use(express.json());
-app.use(cookieParser());
+const bcrypt = require("bcrypt");
 
 
 
@@ -35,7 +32,8 @@ res.send("User Added successfully!!");
 });
 
 
-app.post("/login",async(req,res)=>{
+
+authRouter.post("/login",async(req,res)=>{
     try{
         const {emailId,password}=req.body;
         const user=await User.findOne({emailId});

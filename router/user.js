@@ -1,11 +1,9 @@
 const express= require("express");
-const requestRouterRouter=express.Router;
+const requestRouter=express.Router;
 var cookieParser = require('cookie-parser')
 const jwt=require("jsonwebtoken");
 const app=express();
 const User=require("../models/user");
-app.use(express.json());
-app.use(cookieParser());
 
 
 requestRouter.get("/users",async(req, res)=>{
