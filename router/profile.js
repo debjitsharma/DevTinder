@@ -2,7 +2,6 @@ const express= require("express");
 const profileRouter= express.Router();
 const express=require("express");
 var cookieParser = require('cookie-parser')
-const connectDB=require("../config/database")
 const jwt=require("jsonwebtoken");
 const {adminAuth}= require("../middlewares/auth")
 const app=express();
@@ -53,3 +52,5 @@ profileRouter.patch("/user/:userId",async(req,res)=>{
 }
 )
 
+
+module.exports= profileRouter;

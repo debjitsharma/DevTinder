@@ -8,45 +8,18 @@ const User=require("../models/user");
 app.use(express.json());
 app.use(cookieParser());
 
+const authRouter=require("../router/auth");
+const profileRouter=require("../router/profile");
+const requestRouter =require("../router/user");
 
+app.use("/",authRouter);
+app.use("/",profileRouter);
+app.use("/",requestRouter);
 
-app.get("/users",async(req, res)=>{
-    const userEmail=req.body.emailId;
-    const userId=req.body.userId;
-    try{
-        const users= await User.find({emailId:userEmail});
-        res.send(users);
-    }
-    catch(err){
-    res.status(400).send("Email doesn't match any user "+ err.message)
-    }
-})
-
-app.get("/feed",async(req,res)=>{
-    try{
-        const users=await User.find({});
-        res.send(users);
-        
-    }
-    catch(err){
-        res.status(400).send("Users empty"+ err.message)
-    }
-})
-app.delete("/delete", async(req,res)=>{
-    const userId=req.body.userId;
-    try{
-        await User.findByIdAndDelete(userId)
-        res.send("User deleted!")
-    }
-    catch(err){
-        res.status(400).send("Something went wrong");
-    }
-})
-
-app.post("/sendConnectionRequest",adminAuth, async(req,res)=>{
-    const user=req.user;
-    res.send(user.firstName + "sent the connection request")
-});
+// app.post("/sendConnectionRequest",adminAuth, async(req,res)=>{
+//     const user=req.user;
+//     res.send(user.firstName + "sent the connection request")
+// });
 connectDB()
 .then(()=>
 {
