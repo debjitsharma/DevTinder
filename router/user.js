@@ -1,5 +1,5 @@
 const express= require("express");
-const requestRouter=express.Router;
+const requestRouter=express.Router();
 var cookieParser = require('cookie-parser')
 const jwt=require("jsonwebtoken");
 const app=express();
