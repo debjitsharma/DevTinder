@@ -1,5 +1,6 @@
 const express= require("express");
 const profileRouter= express.Router();
+const {validateEditProfileData}=require("../utils/validators");
 var cookieParser = require('cookie-parser')
 const jwt=require("jsonwebtoken");
 const {adminAuth}= require("../middlewares/auth")
@@ -46,6 +47,34 @@ profileRouter.patch("/user/:userId",async(req,res)=>{
     }
 }
 )
+profileRouter.patch("/profile/edit",userAuth, async(req, res)=>{
+    try{
+        //validate allowed fields
+
+        if(!validateEditProfileData(req)){
+            throw new Error("Invalid edit request")
+        }
+//logged in user from middleware
+const loggedInUser=req.user;
+
+//Update each field from request body
+Object.keys(req.body).forEach((key)=>{
+    loggedInUser[key]=req.body[key];
+});
+
+//Save to database
+await loggedInUser.save();
+
+//Send response with updated data
+res.json({
+    message:`${loggedInUser.firstName} your profile was updated successfully`,
+    data: loggedInUser,
+});
+    }
+    catch(err){
+        res.status(400).send(err.message)
+    }
+});
 
 
 module.exports= profileRouter;
