@@ -47,7 +47,7 @@ profileRouter.patch("/user/:userId",async(req,res)=>{
     }
 }
 )
-profileRouter.patch("/profile/edit",userAuth, async(req, res)=>{
+profileRouter.patch("/profile/edit",adminAuth, async(req, res)=>{
     try{
         //validate allowed fields
 
