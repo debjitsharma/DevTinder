@@ -24,7 +24,7 @@ if(!validator.isStrongPassword(password)){
 
 const validateEditProfileData =(req)=>{
     const allowedEditFields=[
-        "firstname",
+        "firstName",
         "lastName",
         "emailId",
         "photoUrl",
@@ -38,8 +38,6 @@ const validateEditProfileData =(req)=>{
     );
     return isEditAllowed;
 };
-
-
 
 module.exports={
 validateSignUpData,
