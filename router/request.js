@@ -46,7 +46,7 @@ requestRouter.post( "/request/send/:status/:toUserId",
             await connectionRequest.save();
             res.json(
                 {
-                    message:"Connection request sent successfully",
+                    message:req.user.firstName+" "+status+" "+ req.user.lastName,
                     data: connectionRequest,
                 }
             );
