@@ -10,13 +10,13 @@ app.use(cookieParser());
 
 const authRouter=require("../router/auth");
 const profileRouter=require("../router/profile");
-const requestRouter =require("../router/user");
+const userRouter =require("../router/user");
 const connectionRequestRouter=require("../router/request")
 
 app.use("/",authRouter);
 app.use("/",profileRouter);
 app.use("/",connectionRequestRouter);
-app.use("/",requestRouter);
+app.use("/",userRouter);
 
 // app.post("/sendConnectionRequest",adminAuth, async(req,res)=>{
 //     const user=req.user;
