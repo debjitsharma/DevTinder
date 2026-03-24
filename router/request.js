@@ -46,7 +46,7 @@ requestRouter.post( "/request/send/:status/:toUserId",
             await connectionRequest.save();
             res.json(
                 {
-                    message:req.user.firstName+" "+status+" "+ req.user.lastName,
+                    message:req.user.firstName+" is "+status+" in "+ toUser.firstName,
                     data: connectionRequest,
                 }
             );
