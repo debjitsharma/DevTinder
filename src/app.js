@@ -4,11 +4,16 @@ const connectDB=require("../config/database")
 const jwt=require("jsonwebtoken");
 const {adminAuth}= require("../middlewares/auth")
 const app=express();
+const cors=require("cors");
 const User=require("../models/user");
+app.use(cors({
+    origin:"http://localhost:5173",
+    credentials:true
+}));
 app.use(express.json());
 app.use(cookieParser());
 
-const authRouter=require("../router/auth");
+const authRouter=require("../router/auth"); 
 const profileRouter=require("../router/profile");
 const userRouter =require("../router/user");
 const connectionRequestRouter=require("../router/request")
