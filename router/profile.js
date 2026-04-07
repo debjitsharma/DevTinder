@@ -5,6 +5,8 @@ var cookieParser = require('cookie-parser')
 const jwt=require("jsonwebtoken");
 const {adminAuth}= require("../middlewares/auth")
 const User=require("../models/user");
+const cloudinary= require('cloudinary').v2;
+const multer=require("multer");
 
 profileRouter.get("/profile",adminAuth,async(req,res)=>{
     try{
@@ -76,5 +78,28 @@ res.json({
     }
 });
 
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+const storage= multer.memoryStorage();
+const upload= multer({storage});
+
+authRouter.post('/upload-photo',adminAuth,upload.single('photo'), async(req, res)=>{
+    try{
+        const result= await cloudinary.uploader.upload_stream(
+            {folder:'devtinder'},
+            (error,result)=>{
+                if(error) return res.status(400).json({message:error.message});
+                res.json({photoUrl: result.secure_url});
+            }
+        );
+        require('stream').Readable.from(req.file.buffer).pipe(result);
+    } catch(err){
+        res.status(400).json({message});
+    }
+});
 
 module.exports= profileRouter;
