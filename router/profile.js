@@ -87,7 +87,7 @@ cloudinary.config({
 const storage= multer.memoryStorage();
 const upload= multer({storage});
 
-authRouter.post('/upload-photo',adminAuth,upload.single('photo'), async(req, res)=>{
+profileRouter.post('/upload-photo',adminAuth,upload.single('photo'), async(req, res)=>{
     try{
         const result= await cloudinary.uploader.upload_stream(
             {folder:'devtinder'},
