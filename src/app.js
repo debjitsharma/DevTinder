@@ -8,7 +8,7 @@ const app=express();
 const cors=require("cors");
 const User=require("../models/user");
 app.use(cors({
-    origin:"http://localhost:5173",
+     origin: ["http://localhost:5173", "http://localhost:5174"],
     credentials:true
 }));
 app.use(express.json());
