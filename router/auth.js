@@ -23,8 +23,13 @@ const user=new User({
     emailId,
     password:passwordHash
 });
-await user.save();
-res.send("User Added successfully!!");
+const savedUser=await user.save();
+
+const token=await savedUser.getJWT();
+res.cookie("token",token,{httpOnly:true,expires: new Date(Date.now()+7*24*60*60*1000)});
+res.json({message:"User Added successfully!!",
+    data: savedUser,
+});
 }catch(err){
     res.status(400).send("error saving the user"+ err.message)
 }
