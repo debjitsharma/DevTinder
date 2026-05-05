@@ -8,6 +8,7 @@ const app=express();
 const cors=require("cors");
 const User=require("../models/user");
 const http= require("http"); 
+const initializeSocket=require("../utils/socket")
 app.use(cors({
      origin: ["http://localhost:5173", "http://localhost:5174"],
     credentials:true
@@ -26,8 +27,8 @@ app.use("/",connectionRequestRouter);
 app.use("/",userRouter);
 
 const server= http.createServer(app);
-const socket= require("socket.io");
-const io= socket(server, {cors})
+initializeSocket(server);
+
 // app.post("/sendConnectionRequest",adminAuth, async(req,res)=>{
 //     const user=req.user;
 //     res.send(user.firstName + "sent the connection request")
