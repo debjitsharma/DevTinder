@@ -5,8 +5,8 @@ const io= socket(server, {cors:{
 }});
 
 io.on("connection",(socket)=>{
-    socket.on("joinChat",({userId,targetUserId})=>{
-    const roomId=[userId,targetUserId].sort().join('_');
+    socket.on("joinChat",({loggedInUserId,targetUserId})=>{
+    const roomId=[loggedInUserId,targetUserId].sort().join('_');
     socket.join(roomId);
     console.log(`${userId}joined room:${roomId}`);
     });
