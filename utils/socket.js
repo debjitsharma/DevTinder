@@ -5,7 +5,11 @@ const io= socket(server, {cors:{
 }});
 
 io.on("connection",(socket)=>{
-    socket.on("joinChat",()=>{});
+    socket.on("joinChat",({userId,targetuserId})=>{
+    const roomId=[userId,targetuserId].sort().join('_');
+    socket.join(roomId);
+    console.log(`${userId}joined room:{roomId}`);
+    });
     socket.on("sendMessage",()=>{})
     socket.on("disconnect",()=>{});
 })
