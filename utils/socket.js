@@ -5,15 +5,17 @@ const io= socket(server, {cors:{
 }});
 
 io.on("connection",(socket)=>{
-    socket.on("joinChat",({loggedInUserId,targetUserId})=>{
+    socket.on("joinChat",({firstName,loggedInUserId,targetUserId})=>{
     const roomId=[loggedInUserId,targetUserId].sort().join('_');
     socket.join(roomId);
-    console.log(`${userId}joined room:${roomId}`);
+    console.log(`${firstName}joined room:${roomId}`);
     });
-    socket.on("sendMessage",()=>{})
+    socket.on("sendMessage",({firstName,loggedInUserId,targetUserId,text:newMessage})=>{
+    const roomId=[loggedInUserId,targetUserId].sort().join('_'); 
+    io.to(roomId).emit("messageReceived",{firstName,newMessage}); 
+    });
     socket.on("disconnect",()=>{});
 })
 
 };
-
 module.exports=initializeSocket;
