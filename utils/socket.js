@@ -12,6 +12,7 @@ io.on("connection",(socket)=>{
     });
     socket.on("sendMessage",({firstName,loggedInUserId,targetUserId,text:newMessage})=>{
     const roomId=[loggedInUserId,targetUserId].sort().join('_'); 
+    console.log(firstName+ " "+newMessage);
     io.to(roomId).emit("messageReceived",{firstName,newMessage}); 
     });
     socket.on("disconnect",()=>{});
