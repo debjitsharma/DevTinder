@@ -10,7 +10,7 @@ const bcrypt = require("bcrypt");
 
 authRouter.post("/signup",async(req,res)=>{
     try{
-        //validation
+        //validation required
 validateSignUpData(req);
 //extraction of only allowed fields
 const {firstName,lastName,emailId,password}=req.body;
