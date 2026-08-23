@@ -1,5 +1,5 @@
 const socket= require("socket.io");
-const
+const {Chat}=require("../models/chat")
 const crypto= require("crypto");
 const getSecretRoomId= (loggedInUserId, targetUserId)=>{
     return crypto
@@ -18,12 +18,36 @@ io.on("connection",(socket)=>{
     socket.join(roomId);
     console.log(`${firstName}joined room:${roomId}`);
     });
-    socket.on("sendMessage",({firstName,loggedInUserId,targetUserId,text:newMessage})=>{
+
+
+    socket.on("sendMessage",
+    async({firstName,loggedInUserId,targetUserId,text:newMessage})=>{
+     try{   
      const roomId=getSecretRoomId(loggedInUserId,targetUserId);
      console.log("2nd roomid  " +roomId);
     console.log(firstName+ " "+newMessage);
-    io.to(roomId).emit("messageReceived",{firstName,loggedInUserId,targetUserId,newMessage}); 
+
+    //checking if userId & targetUserId are friends
+    let chat= await Chat.findOne({
+        participants:{$all:[loggedInUserId,targetUserId]},
     });
+    if(!chat){
+        chat = new Chat({
+            participants:[loggedInUserId,targetUserId],
+            messages:[],
+        });
+    }
+    chat.messages.push({
+        senderId: targetUserId,
+        text:newMessage,
+    })
+
+    await chat.save();
+
+    io.to(roomId).emit("messageReceived",{firstName,loggedInUserId,targetUserId,newMessage}); 
+}catch(err){
+    console.log(err);
+}});
     socket.on("disconnect",()=>{});
 })
 
