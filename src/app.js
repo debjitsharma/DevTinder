@@ -20,11 +20,13 @@ const authRouter=require("../router/auth");
 const profileRouter=require("../router/profile");
 const userRouter =require("../router/user");
 const connectionRequestRouter=require("../router/request")
+const chatRouter=require("../router/chat");
 
 app.use("/",authRouter);
 app.use("/",profileRouter);
 app.use("/",connectionRequestRouter);
 app.use("/",userRouter);
+app.use('/',chatRouter);
 
 const server= http.createServer(app);
 initializeSocket(server);

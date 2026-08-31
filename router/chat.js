@@ -32,4 +32,4 @@ res.json(chat);
  }   
 
 });
-module.exports={chatRouter};
+module.exports=chatRouter;
